@@ -1,63 +1,585 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+  <meta charset="UTF-8">
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-    <meta
-      name="theme-color"
-      content="#111827"
-    />
+  <meta
+    name="theme-color"
+    content="#0f172a"
+  >
 
-    <meta
-      name="description"
-      content="Bingo Tracker: acompanhe suas cartelas, registre números sorteados e receba alertas automáticos de bingo."
-    />
+  <meta
+    name="description"
+    content="Bingo Tracker: acompanhe suas cartelas, registre números sorteados e identifique automaticamente bingo e quase bingo."
+  >
 
-    <meta
-      name="application-name"
-      content="Bingo Tracker"
-    />
+  <title>Bingo Tracker</title>
 
-    <meta
-      name="apple-mobile-web-app-capable"
-      content="yes"
-    />
+  <link rel="stylesheet" href="./style.css">
 
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+  <script src="./app.js" defer></script>
+</head>
 
-    <meta
-      name="apple-mobile-web-app-title"
-      content="Bingo Tracker"
-    />
+<body data-theme="dark">
 
-    <meta
-      name="format-detection"
-      content="telephone=no"
-    />
+  <div class="app-shell">
 
-    <meta
-      name="color-scheme"
-      content="dark light"
-    />
+    <!-- CABEÇALHO -->
 
-    <title>Bingo Tracker</title>
-  </head>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          🎱
+        </div>
 
-  <body>
-    <div id="root"></div>
+        <div>
+          <h1>Bingo Tracker</h1>
+          <p>Suas cartelas em tempo real</p>
+        </div>
+      </div>
 
-    <script
-      type="module"
-      src="/src/main.tsx"
-    ></script>
-  </body>
+      <button
+        id="themeToggle"
+        class="icon-button"
+        type="button"
+        aria-label="Alternar tema"
+        title="Alternar tema"
+      >
+        ☀️
+      </button>
+    </header>
+
+    <main>
+
+      <!-- RESUMO DA PARTIDA -->
+
+      <section
+        class="stats-grid"
+        aria-label="Resumo da partida"
+      >
+
+        <div class="stat-card">
+          <span class="stat-label">
+            Cartelas
+          </span>
+
+          <strong id="statCards">0</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            Sorteados
+          </span>
+
+          <strong id="statDrawn">0</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            Vencedoras
+          </span>
+
+          <strong id="statWinners">0</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            Quase bingo
+          </span>
+
+          <strong id="statAlmost">0</strong>
+        </div>
+
+      </section>
+
+      <!-- REGISTRO DE NÚMEROS -->
+
+      <section
+        class="panel draw-panel"
+        aria-labelledby="drawTitle"
+      >
+
+        <div class="section-heading">
+          <div>
+            <h2 id="drawTitle">
+              Registrar sorteio
+            </h2>
+
+            <p>
+              Rodada
+              <strong id="roundNumber">1</strong>
+            </p>
+          </div>
+
+          <button
+            id="undoButton"
+            class="button button-secondary"
+            type="button"
+          >
+            ↶ Desfazer
+          </button>
+        </div>
+
+        <form
+          id="drawForm"
+          class="draw-form"
+        >
+
+          <label
+            for="numberInput"
+            class="sr-only"
+          >
+            Número sorteado
+          </label>
+
+          <input
+            id="numberInput"
+            class="number-input"
+            type="number"
+            min="1"
+            max="75"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            placeholder="1 a 75"
+            autocomplete="off"
+            required
+          >
+
+          <button
+            class="button button-primary"
+            type="submit"
+          >
+            Marcar número
+          </button>
+
+        </form>
+
+        <div
+          id="lastDrawn"
+          class="last-drawn"
+          aria-live="polite"
+        >
+          Nenhum número sorteado.
+        </div>
+
+        <div class="history-heading">
+          <h3>Histórico</h3>
+
+          <span id="historyCount">
+            0 números
+          </span>
+        </div>
+
+        <div
+          id="drawHistory"
+          class="draw-history"
+          aria-label="Histórico dos sorteios"
+        ></div>
+
+      </section>
+
+      <!-- ALERTAS DE BINGO -->
+
+      <section
+        id="alertsSection"
+        class="alerts-section"
+        aria-live="polite"
+        hidden
+      >
+
+        <div class="section-heading">
+          <h2>Alertas da rodada</h2>
+        </div>
+
+        <div id="alertsList"></div>
+
+      </section>
+
+      <!-- CARTELAS -->
+
+      <section
+        class="cards-section"
+        aria-labelledby="cardsTitle"
+      >
+
+        <div class="section-heading">
+          <div>
+            <h2 id="cardsTitle">
+              Minhas cartelas
+            </h2>
+
+            <p id="cardsSubtitle">
+              Nenhuma cartela cadastrada.
+            </p>
+          </div>
+
+          <button
+            id="addCardButton"
+            class="button button-primary"
+            type="button"
+          >
+            + Cartela
+          </button>
+        </div>
+
+        <div class="toolbar">
+
+          <div
+            class="view-switch"
+            role="group"
+            aria-label="Modo de visualização"
+          >
+
+            <button
+              id="normalViewButton"
+              class="view-button active"
+              type="button"
+              aria-pressed="true"
+            >
+              Normal
+            </button>
+
+            <button
+              id="compactViewButton"
+              class="view-button"
+              type="button"
+              aria-pressed="false"
+            >
+              Compacto
+            </button>
+
+          </div>
+
+          <label class="sort-control">
+            <span>Ordenar</span>
+
+            <select id="sortSelect">
+              <option value="registration">
+                Cadastro
+              </option>
+
+              <option value="closest">
+                Mais próximas
+              </option>
+
+              <option value="identifier">
+                Identificador
+              </option>
+            </select>
+          </label>
+
+        </div>
+
+        <div
+          id="emptyCards"
+          class="empty-state"
+        >
+          <div class="empty-icon">🎟️</div>
+
+          <h3>Cadastre sua primeira cartela</h3>
+
+          <p>
+            Cole uma sequência de 24 números
+            separados por ponto e vírgula.
+          </p>
+
+          <button
+            id="emptyAddButton"
+            class="button button-primary"
+            type="button"
+          >
+            Adicionar cartela
+          </button>
+        </div>
+
+        <div
+          id="cardsContainer"
+          class="cards-container normal-view"
+        ></div>
+
+      </section>
+
+      <!-- CONFIGURAÇÕES -->
+
+      <section
+        class="panel settings-panel"
+        aria-labelledby="settingsTitle"
+      >
+
+        <div class="section-heading">
+          <div>
+            <h2 id="settingsTitle">
+              Configurações
+            </h2>
+
+            <p>
+              Personalize as regras da partida.
+            </p>
+          </div>
+        </div>
+
+        <h3>Modalidades de vitória</h3>
+
+        <div class="settings-list">
+
+          <label class="setting-row">
+            <span>
+              Linha horizontal
+            </span>
+
+            <input
+              id="ruleHorizontal"
+              type="checkbox"
+              checked
+            >
+          </label>
+
+          <label class="setting-row">
+            <span>
+              Coluna vertical
+            </span>
+
+            <input
+              id="ruleVertical"
+              type="checkbox"
+              checked
+            >
+          </label>
+
+          <label class="setting-row">
+            <span>
+              Quatro cantos
+            </span>
+
+            <input
+              id="ruleCorners"
+              type="checkbox"
+              checked
+            >
+          </label>
+
+          <label class="setting-row">
+            <span>
+              Diagonal
+            </span>
+
+            <input
+              id="ruleDiagonal"
+              type="checkbox"
+            >
+          </label>
+
+          <label class="setting-row">
+            <span>
+              Cartela cheia
+            </span>
+
+            <input
+              id="ruleFull"
+              type="checkbox"
+            >
+          </label>
+
+        </div>
+
+        <h3>Preferências</h3>
+
+        <div class="settings-list">
+
+          <label class="setting-row">
+            <span>
+              Efeitos sonoros
+            </span>
+
+            <input
+              id="soundToggle"
+              type="checkbox"
+            >
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- GERENCIAMENTO DA PARTIDA -->
+
+      <section
+        class="panel management-panel"
+        aria-labelledby="managementTitle"
+      >
+
+        <h2 id="managementTitle">
+          Gerenciar partida
+        </h2>
+
+        <p>
+          Faça backup das cartelas ou inicie
+          uma nova rodada.
+        </p>
+
+        <div class="management-actions">
+
+          <button
+            id="exportButton"
+            class="button button-secondary"
+            type="button"
+          >
+            Exportar backup
+          </button>
+
+          <button
+            id="importButton"
+            class="button button-secondary"
+            type="button"
+          >
+            Importar backup
+          </button>
+
+          <button
+            id="newRoundButton"
+            class="button button-danger"
+            type="button"
+          >
+            Nova rodada
+          </button>
+
+        </div>
+
+        <input
+          id="backupFileInput"
+          type="file"
+          accept=".json,application/json"
+          hidden
+        >
+
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        Bingo Tracker · Dados salvos neste navegador
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- MODAL DE CARTELAS -->
+
+  <dialog
+    id="cardDialog"
+    class="card-dialog"
+    aria-labelledby="cardDialogTitle"
+  >
+
+    <form
+      id="cardForm"
+      class="card-form"
+    >
+
+      <div class="dialog-heading">
+
+        <h2 id="cardDialogTitle">
+          Adicionar cartela
+        </h2>
+
+        <button
+          id="closeCardDialog"
+          class="icon-button"
+          type="button"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <label for="cardIdInput">
+        Identificador da cartela
+      </label>
+
+      <input
+        id="cardIdInput"
+        type="text"
+        placeholder="Ex.: 1942"
+        maxlength="50"
+        required
+      >
+
+      <label for="cardNameInput">
+        Nome (opcional)
+      </label>
+
+      <input
+        id="cardNameInput"
+        type="text"
+        placeholder="Ex.: Cartela da Maria"
+        maxlength="100"
+      >
+
+      <label for="cardSequenceInput">
+        Sequência dos números
+      </label>
+
+      <textarea
+        id="cardSequenceInput"
+        rows="7"
+        placeholder="B6;B10;B3;B14;B11;I22;I17;I29;I16;I28;N35;N38;N41;N44;G50;G55;G58;G49;G59;O65;O70;O71;O63;O74"
+        spellcheck="false"
+        required
+      ></textarea>
+
+      <p class="field-help">
+        Informe 24 números na ordem B, I, N,
+        G e O. O centro é livre e não deve
+        ser informado.
+      </p>
+
+      <div
+        id="cardFormError"
+        class="form-error"
+        role="alert"
+        hidden
+      ></div>
+
+      <div class="dialog-actions">
+
+        <button
+          id="cancelCardButton"
+          class="button button-secondary"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="button button-primary"
+          type="submit"
+        >
+          Salvar cartela
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- NOTIFICAÇÕES -->
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+    hidden
+  ></div>
+
+</body>
 </html>
