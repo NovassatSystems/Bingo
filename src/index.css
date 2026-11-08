@@ -1,1 +1,425 @@
 
+@import "tailwindcss";
+
+/*
+ * Bingo Tracker
+ * Estilos globais
+ *
+ * Tailwind CSS 4
+ * Mobile-first
+ */
+
+/*
+ * Ativa dark: usando a classe
+ * .dark definida pelo App.tsx.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Paleta do aplicativo */
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bingo-background: #f1f5f9;
+  --bingo-surface: #ffffff;
+  --bingo-surface-alt: #e2e8f0;
+  --bingo-border: #cbd5e1;
+  --bingo-text: #0f172a;
+  --bingo-muted: #475569;
+
+  --bingo-primary: #059669;
+  --bingo-primary-hover: #047857;
+
+  --bingo-warning: #d97706;
+  --bingo-danger: #dc2626;
+
+  color-scheme: light;
+}
+
+:root.dark {
+  --bingo-background: #020617;
+  --bingo-surface: #0f172a;
+  --bingo-surface-alt: #1e293b;
+  --bingo-border: #334155;
+  --bingo-text: #f8fafc;
+  --bingo-muted: #94a3b8;
+
+  --bingo-primary: #10b981;
+  --bingo-primary-hover: #34d399;
+
+  --bingo-warning: #f59e0b;
+  --bingo-danger: #f43f5e;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-width: 320px;
+    min-height: 100%;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--bingo-background);
+    color: var(--bingo-text);
+    overscroll-behavior-y: contain;
+  }
+
+  #root {
+    min-height: 100vh;
+    isolation: isolate;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input,
+  textarea,
+  select {
+    min-width: 0;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--bingo-primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: #10b981;
+    color: #020617;
+  }
+}
+
+/*
+ * Componentes reutilizáveis
+ */
+@layer components {
+  .bingo-surface {
+    background: var(--bingo-surface);
+    color: var(--bingo-text);
+    border: 1px solid var(--bingo-border);
+    border-radius: 1rem;
+  }
+
+  .bingo-muted {
+    color: var(--bingo-muted);
+  }
+
+  .bingo-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 0;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bingo-primary);
+    color: white;
+    font-weight: 700;
+    transition:
+      background 150ms ease,
+      transform 150ms ease;
+  }
+
+  .bingo-button-primary:hover:not(:disabled) {
+    background: var(--bingo-primary-hover);
+  }
+
+  .bingo-button-primary:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /*
+   * Células de cartela
+   */
+  .bingo-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    min-width: 0;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .bingo-cell--marked {
+    background: #065f46;
+    color: #d1fae5;
+    border: 1px solid #10b981;
+  }
+
+  .bingo-cell--free {
+    background: #064e3b;
+    color: #a7f3d0;
+    border: 1px solid #059669;
+  }
+
+  .bingo-cell--almost {
+    background: #78350f;
+    color: #fde68a;
+    border: 2px solid #f59e0b;
+    animation: bingo-pulse 2s ease-in-out infinite;
+  }
+
+  .bingo-cell--winner {
+    background: #047857;
+    color: white;
+    border: 2px solid #6ee7b7;
+    box-shadow: 0 0 10px #10b98155;
+  }
+
+  /*
+   * Destaques das cartelas
+   */
+  .bingo-card--winner {
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px #10b98155;
+  }
+
+  .bingo-card--almost {
+    border-color: #f59e0b;
+  }
+
+  /*
+   * Alertas
+   */
+  .bingo-alert-winner {
+    border: 1px solid #10b981;
+    background: #064e3b;
+    color: #d1fae5;
+    border-radius: 0.75rem;
+  }
+
+  .bingo-alert-almost {
+    border: 1px solid #f59e0b;
+    background: #451a03;
+    color: #fde68a;
+    border-radius: 0.75rem;
+  }
+
+  /*
+   * Rolagem horizontal de histórico
+   */
+  .bingo-history-scroll {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    padding-bottom: 0.5rem;
+  }
+
+  /*
+   * Utilitário para números
+   */
+  .bingo-number {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+/*
+ * Animações
+ */
+@keyframes bingo-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 #f59e0b22;
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px #f59e0b44;
+  }
+}
+
+@keyframes bingo-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bingo-celebrate {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@layer utilities {
+  .animate-bingo-appear {
+    animation: bingo-appear 220ms ease-out both;
+  }
+
+  .animate-bingo-celebrate {
+    animation: bingo-celebrate 800ms ease-in-out;
+  }
+
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+}
+
+/*
+ * Responsividade
+ */
+
+/* Smartphones pequenos */
+@media (max-width: 380px) {
+  .bingo-cell {
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+  }
+
+  .bingo-surface {
+    border-radius: 0.75rem;
+  }
+}
+
+/* Telas maiores */
+@media (min-width: 768px) {
+  .bingo-cell {
+    border-radius: 0.5rem;
+  }
+}
+
+/*
+ * Áreas seguras do iPhone
+ */
+@supports (
+  padding-bottom: env(safe-area-inset-bottom)
+) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/*
+ * Evita zoom automático do Safari
+ * ao focar em campos pequenos.
+ */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
+/*
+ * Evita que conteúdo muito largo
+ * ultrapasse a tela.
+ */
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/*
+ * Acessibilidade
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Melhor legibilidade de números
+ * e controles em dispositivos touch.
+ */
+@media (pointer: coarse) {
+  .bingo-button-primary {
+    min-height: 44px;
+  }
+}
+
+/*
+ * Impressão
+ */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  header,
+  footer,
+  button,
+  .bingo-history-scroll {
+    display: none !important;
+  }
+
+  .bingo-surface {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .bingo-cell {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
