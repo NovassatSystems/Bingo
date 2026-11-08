@@ -22,7 +22,6 @@
   <title>Bingo Tracker</title>
 
   <link rel="stylesheet" href="./style.css">
-
   <script src="./app.js" defer></script>
 </head>
 
@@ -65,34 +64,22 @@
       >
 
         <div class="stat-card">
-          <span class="stat-label">
-            Cartelas
-          </span>
-
+          <span class="stat-label">Cartelas</span>
           <strong id="statCards">0</strong>
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">
-            Sorteados
-          </span>
-
+          <span class="stat-label">Sorteados</span>
           <strong id="statDrawn">0</strong>
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">
-            Vencedoras
-          </span>
-
+          <span class="stat-label">Vencedoras</span>
           <strong id="statWinners">0</strong>
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">
-            Quase bingo
-          </span>
-
+          <span class="stat-label">Quase bingo</span>
           <strong id="statAlmost">0</strong>
         </div>
 
@@ -319,7 +306,8 @@
             </h2>
 
             <p>
-              Personalize as regras da partida.
+              Ative uma ou mais modalidades
+              de vitória para a rodada.
             </p>
           </div>
         </div>
@@ -329,10 +317,7 @@
         <div class="settings-list">
 
           <label class="setting-row">
-            <span>
-              Linha horizontal
-            </span>
-
+            <span>Linha horizontal</span>
             <input
               id="ruleHorizontal"
               type="checkbox"
@@ -341,10 +326,7 @@
           </label>
 
           <label class="setting-row">
-            <span>
-              Coluna vertical
-            </span>
-
+            <span>Coluna vertical</span>
             <input
               id="ruleVertical"
               type="checkbox"
@@ -353,10 +335,7 @@
           </label>
 
           <label class="setting-row">
-            <span>
-              Quatro cantos
-            </span>
-
+            <span>Quatro cantos</span>
             <input
               id="ruleCorners"
               type="checkbox"
@@ -365,10 +344,7 @@
           </label>
 
           <label class="setting-row">
-            <span>
-              Diagonal
-            </span>
-
+            <span>Diagonal</span>
             <input
               id="ruleDiagonal"
               type="checkbox"
@@ -376,12 +352,35 @@
           </label>
 
           <label class="setting-row">
+            <span>Cartela cheia</span>
+            <input
+              id="ruleFull"
+              type="checkbox"
+            >
+          </label>
+
+          <!-- NOVA MODALIDADE -->
+
+          <label class="setting-row">
             <span>
-              Cartela cheia
+              <strong>5 Pedras Loucas</strong>
+              <small
+                style="
+                  display: block;
+                  margin-top: 4px;
+                  color: var(--text-muted);
+                  font-size: 11px;
+                  font-weight: 400;
+                "
+              >
+                Cinco números quaisquer
+                na mesma cartela.
+                O centro livre não conta.
+              </small>
             </span>
 
             <input
-              id="ruleFull"
+              id="ruleFiveCrazy"
               type="checkbox"
             >
           </label>
@@ -393,10 +392,7 @@
         <div class="settings-list">
 
           <label class="setting-row">
-            <span>
-              Efeitos sonoros
-            </span>
-
+            <span>Efeitos sonoros</span>
             <input
               id="soundToggle"
               type="checkbox"
